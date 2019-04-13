@@ -1,0 +1,11 @@
+x<-c("dplyr","reshape2","data.table","lubridate","RMySQL","tidyr","stringr","bit64","mailR")
+lapply(x, require, character.only = TRUE)
+lapply( dbListConnections( dbDriver( drv = "MySQL")), dbDisconnect)
+options(scipen = 999)
+options(useFancyQuotes = FALSE)
+library(xlsx)
+bureau=dbConnect(MySQL(), user="Swetha", password="Swetha@1234@", dbname="platform_cb", host="10.120.10.20")
+data <- dbGetQuery(bureau,"select ap.applicationId,ap.userId,ap.`status`,ap.createdAt,ap.updatedAt,ap.creditBureauTypeId,acr.score
+from application as ap left join applicationCreditReport as acr on ap.applicationId=acr.applicationId
+where ap.updatedAt between '2019-03-01' and '2019-03-10'")
+fwrite(data,"/pb_analytics/analytics/Saiswetha/Bureau/users_mar1_mar10.csv")
